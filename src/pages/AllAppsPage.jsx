@@ -7,23 +7,27 @@ import axios from "axios";
 const AllAppsPage = () => {
  const [apps, setApps] = useState([]);
  const [page, setPage] = useState(1);
- const [total, setTotal] = useState(0)
+ const [total, setTotal] = useState(0);
+ const [sort, setSort] = useState("size");
+ const [order, setOrder] = useState("");
+
 
  const limit = 10 ;
 
  useEffect(() => {
   newPage()
- },[page])
+ },[page, order, sort])
 
 const newPage = async () =>{
   try{
     const skip = (page - 1) * limit;
-    const res = await axios.get(`http://localhost:5000/apps?limit=${limit}&skip=${skip}`)
+    const res = await axios.get(`http://localhost:5000/apps?limit=${limit}&skip=${skip}&sort=${sort}&order=${order}`)
     setApps(res.data.apps)
     setTotal(res.data.total)
   }
   catch (err) {
         console.log(err);
+       
         
   }
 };
@@ -37,6 +41,14 @@ const totalPages = Math.ceil(total / limit);
 //   .then(res => res.json())
 //   .then(data => setApps(data))
 // },[])
+
+const handleSelect = (e) =>{
+    console.log(e.target.value)
+     const sortText = e.target.value;
+     setSort(sortText.split('-')[0]);
+     setOrder(sortText.split('-')[1])
+}
+
    return (
     <div>
       <title>All Apps | Hero Apps</title>
@@ -81,7 +93,7 @@ const totalPages = Math.ceil(total / limit);
         </form>
 
         <div className="">
-          <select className="select bg-white">
+          <select onChange={handleSelect} className="select bg-white">
             <option selected disabled={true}>
               Sort by <span className="text-xs">R / S / D</span>
             </option>
@@ -128,11 +140,17 @@ const totalPages = Math.ceil(total / limit);
           }
         </div> */}
         <div className="text-center py-20">
+          <button disabled={page === 1} className="btn btn-outline" onClick={() => setPage(prev => Math.max(prev -1,1))}>
+            Previous
+          </button>
           {
             [...Array(totalPages).keys()].map(num => (
               <button key={num} className={`btn m-1 ${page === num + 1 ? "btn-primary" : "btn-outline"}`} onClick={() => setPage(num + 1)}>{num + 1}</button>
             ))
           }
+          <button disabled={apps.length < limit} className="btn btn-outline " onClick={() => setPage(prev => prev + 1)}>
+            Next
+          </button>
         </div>
       </>
     </div>
