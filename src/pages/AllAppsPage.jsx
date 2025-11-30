@@ -8,6 +8,7 @@ const AllAppsPage = () => {
  const [apps, setApps] = useState([]);
  const [page, setPage] = useState(1);
  const [total, setTotal] = useState(0)
+
  const limit = 10 ;
 
  useEffect(() => {
@@ -25,8 +26,12 @@ const newPage = async () =>{
         console.log(err);
         
   }
-}
+};
+
 const totalPages = Math.ceil(total / limit);
+
+//console.log(totalPages);
+
 // useEffect(() =>{
 //   fetch('http://localhost:5000/apps?limit=10&skip=15')
 //   .then(res => res.json())
@@ -115,10 +120,17 @@ const totalPages = Math.ceil(total / limit);
 
         </div> */}
 
-        <div className="text-center py-20">
+        {/* <div className="text-center py-20">
           {
             Array.from({length: totalPages}, (_, i) => i  + 1).map(num => (
               <button key={num} className="btn btn-active m-1" onClick={() => setPage(num)}>{num}</button>
+            ))
+          }
+        </div> */}
+        <div className="text-center py-20">
+          {
+            [...Array(totalPages).keys()].map(num => (
+              <button key={num} className={`btn m-1 ${page === num + 1 ? "btn-primary" : "btn-outline"}`} onClick={() => setPage(num + 1)}>{num + 1}</button>
             ))
           }
         </div>
