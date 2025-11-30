@@ -10,27 +10,26 @@ const AllAppsPage = () => {
  const [total, setTotal] = useState(0);
  const [sort, setSort] = useState("size");
  const [order, setOrder] = useState("");
+ const [search, setSearch] = useState("");
 
 
  const limit = 10 ;
 
  useEffect(() => {
-  newPage()
- },[page, order, sort])
-
-const newPage = async () =>{
+  const newPage = async () =>{
   try{
     const skip = (page - 1) * limit;
-    const res = await axios.get(`http://localhost:5000/apps?limit=${limit}&skip=${skip}&sort=${sort}&order=${order}`)
+    const res = await axios.get(`http://localhost:5000/apps?limit=${limit}&skip=${skip}&sort=${sort}&order=${order}&search=${search}`)
     setApps(res.data.apps)
     setTotal(res.data.total)
   }
   catch (err) {
         console.log(err);
-       
-        
   }
 };
+   newPage()
+ },[page, order, sort,search])
+
 
 const totalPages = Math.ceil(total / limit);
 
@@ -47,6 +46,10 @@ const handleSelect = (e) =>{
      const sortText = e.target.value;
      setSort(sortText.split('-')[0]);
      setOrder(sortText.split('-')[1])
+}
+
+const handelSearch = (e) =>{
+  setSearch(e.target.value)
 }
 
    return (
@@ -88,7 +91,7 @@ const handleSelect = (e) =>{
                 <path d="m21 21-4.3-4.3"></path>
               </g>
             </svg>
-            <input type="search" className="" placeholder="Search Apps" />
+            <input onChange={handelSearch} type="search" className="" placeholder="Search Apps" />
           </label>
         </form>
 
