@@ -1,11 +1,38 @@
 import { DiVisualstudio } from "react-icons/di";
 import AppCard from "../ui/AppCard";
 
-import { useLoaderData } from "react-router";
+import { useEffect, useState } from "react";
+import axios from "axios";
 
 const AllAppsPage = () => {
-  const apps = useLoaderData();
-  return (
+ const [apps, setApps] = useState([]);
+ const [page, setPage] = useState(1);
+ const [total, setTotal] = useState(0)
+ const limit = 10 ;
+
+ useEffect(() => {
+  newPage()
+ },[page])
+
+const newPage = async () =>{
+  try{
+    const skip = (page - 1) * limit;
+    const res = await axios.get(`http://localhost:5000/apps?limit=${limit}&skip=${skip}`)
+    setApps(res.data.apps)
+    setTotal(res.data.total)
+  }
+  catch (err) {
+        console.log(err);
+        
+  }
+}
+const totalPages = Math.ceil(total / limit);
+// useEffect(() =>{
+//   fetch('http://localhost:5000/apps?limit=10&skip=15')
+//   .then(res => res.json())
+//   .then(data => setApps(data))
+// },[])
+   return (
     <div>
       <title>All Apps | Hero Apps</title>
       {/* Header */}
@@ -76,6 +103,24 @@ const AllAppsPage = () => {
           ) : (
             apps.map((app) => <AppCard key={app.id} app={app}></AppCard>)
           )}
+        </div>
+        {/* <div>
+          <button disabled={page === 1} className="btn btn-primary" onClick={() => setPage(prev => Math.max(prev -1,1))}>
+            Previous
+          </button>
+          <span className="mx-10">page {page}</span>
+          <button disabled={apps.length < limit} className="btn btn-primary " onClick={() => setPage(prev => prev + 1)}>
+            Next
+          </button>
+
+        </div> */}
+
+        <div className="text-center py-20">
+          {
+            Array.from({length: totalPages}, (_, i) => i  + 1).map(num => (
+              <button key={num} className="btn btn-active m-1" onClick={() => setPage(num)}>{num}</button>
+            ))
+          }
         </div>
       </>
     </div>
