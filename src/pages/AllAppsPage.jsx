@@ -19,7 +19,7 @@ const AllAppsPage = () => {
   const newPage = async () =>{
   try{
     const skip = (page - 1) * limit;
-    const res = await axios.get(`http://localhost:5000/apps?limit=${limit}&skip=${skip}&sort=${sort}&order=${order}&search=${search}`)
+    const res = await axios.get(`https://hero-apps-client-sb31.vercel.app/apps?limit=${limit}&skip=${skip}&sort=${sort}&order=${order}&search=${search}`)
     setApps(res.data.apps)
     setTotal(res.data.total)
   }
@@ -36,7 +36,7 @@ const totalPages = Math.ceil(total / limit);
 //console.log(totalPages);
 
 // useEffect(() =>{
-//   fetch('http://localhost:5000/apps?limit=10&skip=15')
+//   fetch('https://hero-apps-client-sb31.vercel.app/apps?limit=10&skip=15')
 //   .then(res => res.json())
 //   .then(data => setApps(data))
 // },[])
